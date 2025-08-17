@@ -1,0 +1,222 @@
+<!--
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Elyx HealthFlow - Dashboard</title>  
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+   .
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">HealthFlow — Elyx</div>
+      <nav> <button class="nav-btn active">Dashboard</button>
+        <button class="nav-btn">Labs</button>
+       <div class="container">
+          <h2>Profile</h2>
+          <form id="profileForm">
+            <input type="text" name="name" placeholder="Your Name" required>
+            <input type="text" name="disease" placeholder="Disease">
+            <input type="text" name="goals" placeholder="Goals">
+            <input type="text" name="age" placeholder="Age">
+            <input type="text" name="commitments" placeholder="Commitments">
+            <button type="submit">Save</button>
+          </form>
+    </aside>
+    <main class="main">
+      <header class="topbar">
+        <div class="user">--</div>
+      </header>
+      <section class="cards">
+        <div class="card small" id="healthScoreCard">
+          <div class="card-title">Health Score</div>
+          <div class="card-value" id="healthScore">—</div>
+        </div>
+        <div class="card small" id="metabolicCard">
+          <div class="card-title">Metabolic Momentum</div>
+          <div class="card-value" id="metabolic">—%</div>
+        </div>
+        <div class="card small" id="cardioCard">
+          <div class="card-title">Cardio Readiness</div>
+          <div class="card-value" id="cardio">—</div>
+        </div>
+        <div class="card small" id="sleepCard">
+          <div class="card-title">Sleep / Strain</div>
+          <div class="card-value" id="sleep">—h</div>
+        </div>
+      </section>
+      <section class="panels">
+        <div class="panel left">
+          <h3>Upcoming Labs</h3>
+          <ul id="labsList"></ul>
+          <h3>Recent Decisions</h3>
+          <ul id="decisionsList"></ul>
+        </div>
+        <div class="panel center">
+          <h3>Plan Tasks</h3>
+          <ul id="plansList"></ul>
+          <h3>Health Trends</h3> <canvas id="trendChart" height="160">
+
+          </canvas>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <button id="chat-button">💬</button>
+  <div id="chat-box">
+    <div id="messages"></div>
+    <form id="chat-form"> <input type="text" id="message-input" placeholder="Type a message..." autocomplete="off" />
+      <button id="sendBtn" type="submit">Send</button>
+    </form>
+  </div>
+  <script src="/js/app.js"></script>
+
+
+</body>
+
+</html>-->
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Elyx HealthFlow - Dashboard</title>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Socket.io client -->
+  <script src="/socket.io/socket.io.js"></script>
+
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">HealthFlow — Elyx</div>
+      <nav>
+        <button class="nav-btn active">Dashboard</button>
+        <button class="nav-btn">Labs</button>
+      </nav>
+
+      <!-- Profile -->
+      <div class="container">
+        <h2>Profile</h2>
+        <form id="profileForm">
+          <input type="text" name="name" placeholder="Your Name" required>
+          <input type="text" name="disease" placeholder="Disease">
+          <input type="text" name="goals" placeholder="Goals">
+          <input type="text" name="age" placeholder="Age">
+          <input type="text" name="commitments" placeholder="Commitments">
+          <button type="submit">Save</button>
+        </form>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="user">--</div>
+      </header>
+
+      <!-- Dashboard cards -->
+      <section class="cards">
+        <div class="card small" id="healthScoreCard">
+          <div class="card-title">Health Score</div>
+          <div class="card-value" id="healthScore">—</div>
+        </div>
+        <div class="card small" id="metabolicCard">
+          <div class="card-title">Metabolic Momentum</div>
+          <div class="card-value" id="metabolic">—%</div>
+        </div>
+        <div class="card small" id="cardioCard">
+          <div class="card-title">Cardio Readiness</div>
+          <div class="card-value" id="cardio">—</div>
+        </div>
+        <div class="card small" id="sleepCard">
+          <div class="card-title">Sleep / Strain</div>
+          <div class="card-value" id="sleep">—h</div>
+        </div>
+      </section>
+
+      <!-- Panels -->
+      <section class="panels">
+        <!-- LEFT -->
+        <div class="panel left">
+          <h3>Internal Metrics</h3>
+          <ul id="labsList"></ul>
+
+          <h3>Recent Decisions</h3>
+          <ul id="decisionsList"></ul>
+
+          <!-- Add Decision Form -->
+          <h4>Add Decision</h4>
+          <form id="decisionForm" class="sq">
+            <input type="text"  class="sq" name="decision_type" placeholder="Decision Type" required>
+            <input type="text" class="sq"  name="description" placeholder="Description" required>
+            <input type="text"  class="sq" name="reason" placeholder="Reason">
+            <input type="date"  class="sq" name="date" required>
+            <button type="submit" id="add-decision-btn">Add</button>
+          </form>
+        </div>
+
+        <!-- CENTER -->
+        <div class="panel center">
+          <h3>Plan Tasks</h3>
+          <ul id="plansList"></ul>
+
+          <h3>Health Trends</h3>
+          <canvas id="trendChart" height="160"></canvas>
+
+          <!-- Add Progress Form -->
+          <h4>Update Progress</h4>
+          <form id="progressForm">
+            <select name="metric" required class="rect">
+              <option value="">--Select Metric--</option>
+              <option value="healthScore">Health Score</option>
+              <option value="sleep">Sleep</option>
+              <option value="cardio">Cardio Readiness</option>
+              <option value="metabolic">Metabolic Momentum</option>
+            </select>
+            <input type="number" step="0.1" name="value" placeholder="Value" class="rect" required>
+            <input type="date" class="rect" name="date" required>
+            <button type="submit" class="rect" id="update-progress-btn">Add</button>
+          </form>
+        </div>
+
+        <!-- RIGHT -->
+        <div class="panel right">
+          <h3>Personal Analysis</h3>
+          
+          <!-- Add Persona Form -->
+          <h4>Update Personal</h4>
+          <form id="personaForm">
+            <textarea name="analysis" rows="4" class="rect" placeholder="Write personal analysis..." required></textarea>
+            <button type="submit" id="save-persona-btn">Save</button>
+          </form>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Chat Widget -->
+  <button id="chat-button">💬</button>
+  <div id="chat-box">
+    <div id="messages"></div>
+    <form id="chat-form">
+      <input type="text" id="message-input" placeholder="Type a message..." autocomplete="off" />
+      <button id="sendBtn" type="submit">Send</button>
+    </form>
+  </div>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>
